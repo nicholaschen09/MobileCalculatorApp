@@ -76,6 +76,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding.tvPercent.setOnClickListener {
             clickOperator(it)
         }
+
+        binding.tvMinus.setOnClickListener {
+            clickOperator(it)
+        }
+
+        binding.tvMultiple.setOnClickListener {
+            clickOperator(it)
+        }
+
+        binding.tvDivide.setOnClickListener {
+            clickOperator(it)
+        }
     }
 
     private fun clearCalculator() {
@@ -124,30 +136,36 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
         var result = lastOperand.toString()
-        if(lastOperator != "") {
-            var operand2 = inputNums.toString().toInt()
-        result = calculate(lastOperand, operand2, lastOperator)
+        if (lastOperator != "") {
+            val operand2 = inputNums.toString().toInt()
+            result = calculate(lastOperand, operand2, lastOperator)
+        }
+
+        if (!result.isEmpty())
+            lastOperand = result.toInt()
+        lastOperator = textView.text.toString()
+        if (lastOperator == "=")
+            lastOperator = ""
+
+        viewModel.updateResult(result)
+        inputNums.clear()
+        displayExpression()
     }
 
-        if(!result.isEmpty())
-             lastOperand = result.toInt()
-    lastOperator = textView.text.toString()
-    if(lastOperator == "=")
-    lastOperator = ""
-
-    viewModel.updateResult(result)
-    inputNums.clear()
-    displayExpression()
-
-}
-
     private fun calculate(op1: Int, op2: Int, operator: String): String {
-
         var result = ""
-        if (operator == "+")
-            result = (op1 + op2).toString()
-        else if (operator == "-")
-            result = (op1 - op2).toString()
+        when (operator) {
+            "+" -> result = (op1 + op2).toString()
+            "-" -> result = (op1 - op2).toString()
+            "*" -> result = (op1 * op2).toString()
+            "/" -> {
+                if (op2 != 0) {
+                    result = (op1 / op2).toString()
+                } else {
+                    result = "Error"
+                }
+            }
+        }
         return result
     }
 
